@@ -10,15 +10,12 @@ class CreateStudentImprovementsTable extends Migration
     {
         Schema::create('student_improvements', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('student_id');
-            $table->string('subject_name');
-            $table->text('area_of_weakness');
-            $table->date('session_start_date');
-            $table->date('session_end_date');
-            $table->integer('improvement_target');
+            $table->string('type');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->string('date_range')->nullable();
+            $table->integer('target')->nullable();
             $table->timestamps();
-
-            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
         });
     }
 

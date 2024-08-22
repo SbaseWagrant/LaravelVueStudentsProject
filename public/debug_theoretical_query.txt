@@ -1,0 +1,4 @@
+Query: //w:tbl[preceding-sibling::w:p[w:r/w:t[contains(text(), "Theoretical Knowledge Improvement")]]]//w:tr
+Rows found: 0
+Query: //w:tbl[preceding-sibling::w:p[w:r/w:t[contains(text(), "Theoretical Knowledge Improvement")]]]//w:tr
+Rows found: 0

@@ -1,95 +1,67 @@
 <template>
-    <div class="report-generator-container">
+  <div>
       <h2>Generate Report</h2>
-      <form @submit.prevent="generateReport" class="form-container">
-        <div>
-          <label for="start-date">Start Date:</label>
-          <input v-model="reportParams.startDate" type="date" id="start-date" required class="form-input"/>
-        </div>
-        <div>
-          <label for="end-date">End Date:</label>
-          <input v-model="reportParams.endDate" type="date" id="end-date" required class="form-input"/>
-        </div>
-        <div>
-          <label for="template">Report Template:</label>
-          <textarea v-model="reportParams.template" id="template" rows="4" required class="form-input"></textarea>
-        </div>
-        <button type="submit" class="submit-button">Generate Report</button>
+      <form @submit.prevent="generateReport">
+          <div>
+              <label for="student_id">Select Student:</label>
+              <select v-model="form.student_id" id="student_id" required>
+                  <option v-for="student in students" :key="student.id" :value="student.id">
+                      {{ student.name }}
+                  </option>
+              </select>
+          </div>
+
+          <div>
+              <label for="template">Report Template:</label>
+              <textarea v-model="form.template" id="template" required></textarea>
+              <small>Use shortcodes like @student_full_name, @session_date, etc.</small>
+          </div>
+
+          <button type="submit">Generate Report</button>
       </form>
-      <div v-if="reportUrl">
-        <h3>Generated Report</h3>
-        <a :href="reportUrl" target="_blank" class="report-link">Download Report</a>
+
+      <div v-if="report">
+          <h3>Generated Report</h3>
+          <pre>{{ report }}</pre>
       </div>
-    </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
       return {
-        reportParams: {
-          startDate: '',
-          endDate: '',
-          template: '',
-        },
-        reportUrl: null,
+          form: {
+              student_id: null,
+              template: '',
+          },
+          students: [],
+          report: null,
       };
-    },
-    methods: {
-      async generateReport() {
-        try {
-          const response = await axios.post('/generate-report', this.reportParams, {
-            responseType: 'blob',
-          });
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          this.reportUrl = url;
-        } catch (error) {
-          console.error('An error occurred while generating the report:', error);
-        }
+  },
+  methods: {
+      fetchStudents() {
+          axios.get('/api/students')
+              .then(response => {
+                  this.students = response.data;
+              });
       },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  .report-generator-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
+      generateReport() {
+          axios.post('/reports/generate', this.form)
+              .then(response => {
+                  this.report = response.data.report;
+              })
+              .catch(error => {
+                  console.error(error);
+              });
+      }
+  },
+  mounted() {
+      this.fetchStudents();
   }
-  
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .form-input {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .submit-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .submit-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .report-link {
-    color: #007bff;
-  }
-  </style>
-  
+};
+</script>
+
+<style scoped>
+
+</style>

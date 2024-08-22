@@ -125,12 +125,23 @@ class StudentSessionController extends Controller
         return response()->json(['message' => 'Ratings submitted successfully!']);
     }
 
-    public function getPassedSessions()
+    public function getPassedSessionsView()
     {
         $now = Carbon::now();
         $sessions = StudentSession::with('student')
             ->where('created_at', '<', $now)
             ->whereNull('rating')
+            ->orderBy('end_time', 'desc')
+            ->get();
+
+        return response()->json($sessions);
+    }
+
+    public function getPassedSessions()
+    {
+        $now = Carbon::now();
+        $sessions = StudentSession::with('student')
+            ->where('created_at', '<', $now)
             ->orderBy('end_time', 'desc')
             ->get();
 

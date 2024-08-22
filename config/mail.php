@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    'default' => env('MAIL_MAILER', 'mailgun'),
 
     /*
     |--------------------------------------------------------------------------
@@ -36,9 +36,8 @@ return [
     */
 
     'mailers' => [
-
-        'smtp' => [
-            'transport' => 'smtp',
+        'mailgun' => [
+            'transport' => 'mailgun',
             'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST', '127.0.0.1'),
             'port' => env('MAIL_PORT', 2525),

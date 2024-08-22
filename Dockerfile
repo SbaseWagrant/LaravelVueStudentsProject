@@ -12,11 +12,12 @@ RUN apt-get update && apt-get install -y \
     zip \
     libonig-dev \
     libxml2-dev \
+    libzip-dev \
     curl
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install zip pdo_mysql mbstring exif pcntl bcmath gd
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite

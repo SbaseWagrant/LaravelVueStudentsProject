@@ -1,0 +1,12 @@
+Query: //w:tbl[preceding-sibling::w:p[w:r/w:t[contains(text(), "Practical Knowledge Improvement Plan (PKIP) Bx 1")]]]//w:tr
+Rows found: 0
+Query: //w:tbl[preceding-sibling::w:p[w:r/w:t[contains(text(), "Practical Knowledge Improvement Plan (PKIP) Bx 2")]]]//w:tr
+Rows found: 0
+Query: //w:tbl[preceding-sibling::w:p[w:r/w:t[contains(text(), "Practical Knowledge Improvement Plan (PKIP) Bx 3")]]]//w:tr
+Rows found: 0
+Query: //w:tbl[preceding-sibling::w:p[w:r/w:t[contains(text(), "Bx 1.")]]]//w:tr
+Rows found: 0
+Query: //w:tbl[preceding-sibling::w:p[w:r/w:t[contains(text(), "Bx 2.")]]]//w:tr
+Rows found: 0
+Query: //w:tbl[preceding-sibling::w:p[w:r/w:t[contains(text(), "Bx 3.")]]]//w:tr
+Rows found: 0
