@@ -3,11 +3,10 @@ import StudentSession from '../Components/StudentSession.vue';
 
 const routes = [
   {
-    path: '/public/student-sessions',
+    path: '/public/student-sessions-view',
     name: 'StudentSession',
     component: StudentSession,
   },
-  // Other routes...
 ];
 
 const router = createRouter({

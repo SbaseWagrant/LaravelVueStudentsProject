@@ -224,18 +224,24 @@ export default {
       }
     },
     validateEndTime() {
-      if (this.sessionStartTime) {
+    if (this.sessionStartTime && this.sessionEndTime) {
         const startTimeInMinutes = this.convertToMinutes(this.sessionStartTime);
         const endTimeInMinutes = this.convertToMinutes(this.sessionEndTime);
 
-        if (endTimeInMinutes > startTimeInMinutes + 15 || endTimeInMinutes < startTimeInMinutes + 5) {
-          this.errorMessage = 'End time must be within 5 to 15 minutes of the start time';
-          this.sessionEndTime = '';
+        const maxEndTimeInMinutes = startTimeInMinutes + 15;
+        const minEndTimeInMinutes = startTimeInMinutes + 5;
+
+        if (endTimeInMinutes > maxEndTimeInMinutes) {
+            this.sessionEndTime = this.formatTime(maxEndTimeInMinutes);
+            this.errorMessage = 'End time adjusted to within 15 minutes of the start time';
+        } else if (endTimeInMinutes < minEndTimeInMinutes) {
+            this.sessionEndTime = this.formatTime(minEndTimeInMinutes);
+            this.errorMessage = 'End time adjusted to at least 5 minutes after start time';
         } else {
-          this.errorMessage = '';
+            this.errorMessage = '';
         }
-      }
-    },
+    }
+},
     convertToMinutes(time) {
       const [hours, minutes] = time.split(':').map(Number);
       return hours * 60 + minutes;
@@ -246,7 +252,7 @@ export default {
     async scheduleSession() {
       this.loading = true;
       try {
-        const response = await axios.post('/public/schedule-session', {
+        const response = await axios.post('/public/student-sessions', {
           student_id: this.selectedStudent,
           date: this.sessionDate,
           start_time: this.sessionStartTime,
@@ -257,10 +263,10 @@ export default {
         this.successMessage = 'Session scheduled successfully';
         this.clearForm();
       } catch (error) {
-        console.error('Failed to schedule session:', error);
-        this.errorMessage = 'Failed to schedule session';
+        this.errorMessage = error;
       } finally {
         this.loading = false;
+        this.fetchPassedSessions();
       }
     },
     async fetchPassedSessions() {
@@ -303,6 +309,38 @@ export default {
       this.isAvailable = true;
       this.availableDays = [];
     },
+    async fetchAvailability() {
+      if (!this.selectedStudent || !this.sessionDate) {
+          return;
+      }
+
+      this.loading = true;
+      this.errorMessage = '';
+      this.isAvailableSt = false;
+
+      try {
+          const response = await axios.get(`/public/students/${this.selectedStudent}/availabilities`, {
+              params: { date: this.sessionDate }
+          });
+
+          if (response.data && response.data.length > 0) {
+              const weekday = new Date(this.sessionDate).toLocaleString('en-US', { weekday: 'long' });
+              this.isAvailableSt = response.data.some(day => day.weekday === weekday);
+
+              if (!this.isAvailableSt) {
+                  this.errorMessage = 'No available times on this selected date.';
+              }
+          } else {
+              this.errorMessage = 'No availability data found for the selected student.';
+          }
+      } catch (error) {
+          console.error('Error fetching availability:', error);
+          this.errorMessage = 'Failed to fetch availability.';
+      } finally {
+          this.loading = false;
+      }
+  },
+
   },
   mounted() {
     this.fetchStudents();

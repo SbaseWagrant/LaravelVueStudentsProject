@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use App\Models\StudentSession;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
 use App\Notifications\SessionReminder;
 use Carbon\Carbon;
 
@@ -18,7 +17,7 @@ class StudentSessionController extends Controller
             'date' => 'required|date',
             'start_time' => 'required',
             'end_time' => 'required',
-            'type' => 'required|in:one-time,recurring',
+            'session_type' => 'required|in:one-time,recurring',
         ]);
 
         $validated['start_time'] = $this->formatTime($validated['start_time']);
@@ -55,10 +54,8 @@ class StudentSessionController extends Controller
             'user_id' => auth()->id(),
             'start_time' => $validated['start_time'],
             'end_time' => $validated['end_time'],
-            'type' => $validated['type'],
+            'type' => $validated['session_type'],
         ]);
-
-        Notification::send([$student, auth()->user()], new SessionReminder($session));
 
         return response()->json($session, 201);
     }
